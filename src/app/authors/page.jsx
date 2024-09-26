@@ -10,18 +10,30 @@ import Link from 'next/link'
 export default function Authors() {
     const [name, setName] = useState('')
     const [born_date_range, setBornDateRange] = useState([null, null])
+    const [currentPage, setCurrentPage] = useState(1)
 
     const { data, loading, error } = useQuery(GET_AUTHORS, {
         variables: {
             filter: {
                 name,
                 born_date_range: born_date_range[0] && born_date_range[1] ? {start: born_date_range[0], end: born_date_range[1]} : null
-            }
+            },
+            page: currentPage
         }
     })
 
-    if (loading) return <Loader />
-    if (error) return <p>Error: {error.message}</p>
+    const handleNextPage = () => {
+        if (data.authors.pageInfo.hasNextPage) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+
     return (
         <div className="container mx-auto mt-8 px-4">
             <div className="mb-8 bg-blue-300 dark:bg-gray-800 shadow-lg rounded-lg p-6">
@@ -84,6 +96,26 @@ export default function Authors() {
                     </>
                 )}
             </div>
+            {/* Pagination controls */}
+            {data && data.authors.pageInfo && (
+                <div className="mt-8 flex justify-center items-center space-x-4">
+                    <button
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded-md disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400"
+                    >
+                        Previous
+                    </button>
+                    <span className="text-gray-800 dark:text-gray-200">Page {currentPage}</span>
+                    <button
+                        onClick={handleNextPage}
+                        disabled={!data.authors.pageInfo.hasNextPage}
+                        className="px-4 py-2 bg-blue-500 dark:bg-blue-700 text-white rounded-md disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

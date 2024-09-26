@@ -2,8 +2,8 @@ import React from 'react'
 import Link from 'next/link'
 export default function AuthorCard({ author }) {
   return (
-    <div className="bg-white bg-blue-100 dark:bg-gray-800 shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-        <img src={author.profile_image_uri} alt={author.name} className="w-full h-48 object-cover" />
+    <div className="bg-blue-100 dark:bg-gray-800 shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+        <img src={author.profile_image_uri} alt={author.name} className="w-full h-48 object-contain" />
         <div className="p-4">
             <h2 className="text-xl font-semibold mb-2">{author.name}</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">Born: {new Date(Number(author.born_date)).toLocaleDateString()}</p>
