@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
-import { GET_BOOKS, GET_BOOK_REVIEW, UPDATE_BOOK, GET_AUTHORS, DELETE_BOOK } from '../../graphql/queries'
+import { GET_BOOKS, GET_BOOK_REVIEW, UPDATE_BOOK, GET_AUTHORS, DELETE_BOOK, CREATE_BOOK_REVIEW, DELETE_BOOK_REVIEW } from '../../graphql/queries'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -15,7 +15,14 @@ export default function BookDetail({params}) {
     const [isUpdating, setIsUpdating] = useState(false)
     const [authorMap, setAuthorMap] = useState({})
     const [coverImage, setCoverImage] = useState(null)
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+
     const [deleteBook] = useMutation(DELETE_BOOK)
+    const [isAddingReview, setIsAddingReview] = useState(false)
+    const [newReview, setNewReview] = useState({ userName: '', review: '', rating: 5 })
+    const [createBookReview] = useMutation(CREATE_BOOK_REVIEW)
+    const [deleteBookReview] = useMutation(DELETE_BOOK_REVIEW)
+    
 
     const { data, loading, error } = useQuery(GET_BOOKS, {
         variables: {
@@ -142,6 +149,51 @@ export default function BookDetail({params}) {
             }));
         }
 
+        const handleAddReview = () => {
+            setIsAddingReview(true)
+        }
+
+        const handleReviewInputChange = (e) => {
+            const { name, value } = e.target
+            setNewReview(prev => ({ ...prev, [name]: name === 'rating' ? parseInt(value) : value }))
+        }
+
+        const handleSubmitReview = async (e) => {
+            e.preventDefault()
+            setIsSubmittingReview(true)
+            try {
+                const { data } = await createBookReview({
+                    variables: {
+                        bookId: Number(id),
+                        userName: newReview.userName,
+                        review: newReview.review,
+                        rating: newReview.rating
+                    },
+                    refetchQueries: [{ query: GET_BOOK_REVIEW, variables: { bookId: Number(id) } }]
+                })
+                setNewReview({ userName: '', review: '', rating: 5 })
+                setIsAddingReview(false)
+            } catch (error) {
+                console.error('Error creating review:', error)
+            } finally {
+                setIsSubmittingReview(false)
+            }
+        }
+
+        const handleDeleteReview = async (reviewId) => {
+            if (window.confirm('Are you sure you want to delete this review?')) {
+                try {
+                    await deleteBookReview({
+                        variables: {
+                            id: reviewId
+                        },
+                        refetchQueries: [{ query: GET_BOOK_REVIEW, variables: { bookId: Number(id) } }]
+                    })
+                } catch (error) {
+                    console.error('Error deleting review:', error)
+                }
+            }
+        }
 
         return (
             <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -288,7 +340,7 @@ export default function BookDetail({params}) {
                         {reviewData && reviewData.bookReviews && reviewData.bookReviews.length > 0 ? (
                             <div className="space-y-6">
                                 {reviewData.bookReviews.map((review, index) => (
-                                    <div key={index} className="bg-blue-100 dark:bg-gray-800 rounded-lg shadow-md p-6 transition duration-300 ease-in-out hover:shadow-lg">
+                                    <div key={index} className="bg-blue-100 dark:bg-gray-800 rounded-lg shadow-md p-6 transition duration-300 ease-in-out hover:shadow-lg relative">
                                         <div className="flex items-center mb-4">
                                             <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
                                                 {review.user_name ? review.user_name[0].toUpperCase() : 'A'}
@@ -306,11 +358,98 @@ export default function BookDetail({params}) {
                                             </div>
                                         </div>
                                         <p className="text-gray-700 dark:text-gray-300 italic">&ldquo;{review.review}&rdquo;</p>
+                                        <button
+                                            onClick={() => handleDeleteReview(review.id)}
+                                            className="absolute top-4 right-4 text-red-500 hover:text-red-700 focus:outline-none"
+                                            aria-label="Delete review"
+                                        >
+                                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <p className="text-gray-700 dark:text-gray-300 italic text-center py-8">No reviews available for this book yet. Be the first to share your thoughts!</p>
+                        )}
+                        {isAddingReview ? (
+                            <form onSubmit={handleSubmitReview} className="mt-8 space-y-6 bg-blue-100 dark:bg-gray-800 rounded-lg shadow-md p-6 transition duration-300 ease-in-out hover:shadow-lg">
+                                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Add Your Review</h3>
+                                <div className="flex items-center mb-4">
+                                    <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        {newReview.userName ? newReview.userName[0].toUpperCase() : 'A'}
+                                    </div>
+                                    <div className="ml-4 flex-grow">
+                                        <input
+                                            type="text"
+                                            id="userName"
+                                            name="userName"
+                                            value={newReview.userName}
+                                            onChange={handleReviewInputChange}
+                                            placeholder="Your Name"
+                                            required
+                                            className="w-full bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 text-gray-800 dark:text-gray-200 text-lg font-semibold focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex items-center mb-4">
+                                    {[1, 2, 3, 4, 5].map((num) => (
+                                        <svg
+                                            key={num}
+                                            className={`w-6 h-6 cursor-pointer ${
+                                                num <= newReview.rating ? 'text-yellow-400' : 'text-gray-300'
+                                            }`}
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            onClick={() => handleReviewInputChange({ target: { name: 'rating', value: num } })}
+                                        >
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    ))}
+                                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{newReview.rating}/5</span>
+                                </div>
+                                <div>
+                                    <textarea
+                                        id="review"
+                                        name="review"
+                                        rows="3"
+                                        value={newReview.review}
+                                        onChange={handleReviewInputChange}
+                                        placeholder="Your review"
+                                        required
+                                        className="w-full bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300 italic focus:outline-none resize-none"
+                                    ></textarea>
+                                </div>
+                                <div className="flex justify-end space-x-3 mt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsAddingReview(false)}
+                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmittingReview}
+                                        className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                                            isSubmittingReview ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+                                        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out`}
+                                    >
+                                        {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="mt-8 text-center">
+                                <button
+                                    onClick={handleAddReview}
+                                    className="px-6 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                >
+                                    Add a Review
+                                </button>
+                            </div>
                         )}
                     </div>
                     

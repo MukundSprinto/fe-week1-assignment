@@ -47,18 +47,6 @@ export const GET_BOOKS = gql`
     }
 `;
 
-export const GET_BOOK_REVIEW = gql`
-    query GetBooks($bookId: Int!) {
-        bookReviews(book_id: $bookId) {
-            id
-            book_id
-            user_name
-            review
-            rating
-            }
-    }
-`;
-
 export const CREATE_BOOK = gql`
     mutation CreateBook($title: String!, $publishedDate: String!, $authorId: Int!, $coverImageUri: String!) {
         createBook (
@@ -106,6 +94,49 @@ export const DELETE_BOOK = gql`
             published_date
             author_id
             cover_image_uri
+        }
+    }
+`;
+
+export const GET_BOOK_REVIEW = gql`
+    query GetBooks($bookId: Int!) {
+        bookReviews(book_id: $bookId) {
+            id
+            book_id
+            user_name
+            review
+            rating
+        }
+    }
+`;
+
+export const CREATE_BOOK_REVIEW = gql`
+    mutation CreateBookReview($bookId: Int!, $userName: String!, $review: String!, $rating: Int!) {
+        createBookReview(
+            book_id: $bookId
+            user_name: $userName
+            review: $review
+            rating: $rating
+        ) {
+            id
+            book_id
+            user_name
+            review
+            rating
+        }
+    }
+`;
+
+export const DELETE_BOOK_REVIEW = gql`
+    mutation DeleteBookReview($id: ID!) {
+        deleteBookReview(
+            id: $id
+        ) {
+            id
+            book_id
+            user_name
+            review
+            rating
         }
     }
 `;
