@@ -24,7 +24,9 @@ export default function Books() {
                 published_date_range: published_date_range[0] && published_date_range[1] ? {start: published_date_range[0], end: published_date_range[1]} : null
             },
             page: currentPage
-        }
+        },
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'cache-first'
     })
 
     const handleAuthorDropdownOpen = () => {

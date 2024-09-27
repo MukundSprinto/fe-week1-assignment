@@ -13,6 +13,10 @@ export default function BookCard({ book, isPortrait }) {
                     layout="fill"
                     objectFit="contain"
                     className={`transition-opacity duration-300 hover:opacity-90 ${isPortrait ? 'object-cover' : 'object-contain'}`}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbczgCenD6-k568-z0guns8--Pg2tlwFBtpQ&s';
+                    }}
                 />
                 {(() => {
                     const oneMonthAgo = new Date();
@@ -32,7 +36,7 @@ export default function BookCard({ book, isPortrait }) {
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 truncate">{book.title}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 truncate">By {book.author.name}</p>
                 <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                    <p>Published: {new Date(Number(book.published_date)).toLocaleDateString()}</p>
+                    <p>Published: {new Date(Number(book.published_date)).toLocaleDateString('en-GB')}</p>
                 </div>
                 <div className="mt-3">
                     <Link href={`/books/${book.id}`}>

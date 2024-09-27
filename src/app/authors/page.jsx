@@ -19,7 +19,9 @@ export default function Authors() {
                 born_date_range: born_date_range[0] && born_date_range[1] ? {start: born_date_range[0], end: born_date_range[1]} : null
             },
             page: currentPage
-        }
+        },
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'cache-first'
     })
 
     const handleNextPage = () => {
