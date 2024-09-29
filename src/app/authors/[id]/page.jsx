@@ -100,16 +100,6 @@ export default function AuthorDetail({params}) {
                     }
                 })
 
-                console.log({
-                    variables: {
-                        authorId: Number(id), 
-                        phone: editedAuthor.phone,
-                        address: editedAuthor.address,
-                        email: editedAuthor.email,
-                        website: editedAuthor.website
-                    }
-                })
-
                 await updateAuthorDetails({
                     variables: {
                         authorId: Number(id),
@@ -298,30 +288,38 @@ export default function AuthorDetail({params}) {
                                             {author.biography}
                                         </p>
                                     </div>
+                                    {authorDetails.phone && (
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
                                         <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
                                             {authorDetails.phone}
                                         </p>
                                     </div>
+                                    )}
+                                    {authorDetails.address && (
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
                                         <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
                                             {authorDetails.address}
                                         </p>
                                     </div>
+                                    )}
+                                    {authorDetails.email && (
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                                         <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
                                             {authorDetails.email}
                                         </p>
                                     </div>
+                                    )}
+                                    {authorDetails.website && (
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Website</label>
                                         <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
                                             {authorDetails.website}
                                         </p>
                                     </div>
+                                    )}
                                     <div className="flex space-x-4">
                                         <button
                                             onClick={handleEdit}
