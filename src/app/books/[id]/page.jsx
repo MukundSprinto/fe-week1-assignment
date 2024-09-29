@@ -97,6 +97,7 @@ export default function BookDetail({params}) {
             setIsEditing(true)
             setEditedBook({
                 title: book.title,
+                description: book.description,
                 publishedDate: book.published_date,
                 coverImageUri: book.cover_image_uri,
                 authorId: editedBook ? editedBook.authorId : book.author.id
@@ -268,6 +269,18 @@ export default function BookDetail({params}) {
                                             className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                                         />
                                     </div>
+                                    <div className="space-y-2">
+                                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                        <textarea
+                                            id="description"
+                                            name="description"
+                                            value={editedBook.description}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 resize-vertical"
+                                            rows={Math.max(3, Math.min(10, editedBook.description.split('\n').length))}
+                                            style={{ minHeight: '100px', maxHeight: '300px' }}
+                                        />
+                                    </div>
                                     <div className="flex space-x-4">
                                         {isUpdating ? (
                                             <button
@@ -312,6 +325,12 @@ export default function BookDetail({params}) {
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Published Date</label>
                                         <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
                                             {new Date(Number(book.published_date)).toLocaleDateString('en-GB')}
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                        <p className="w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                                            {book.description}
                                         </p>
                                     </div>
                                     <div className="flex space-x-4">
