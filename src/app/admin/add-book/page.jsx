@@ -9,17 +9,23 @@ export default function AddBook() {
   const [title, setTitle] = useState('')
   const [publishedDate, setPublishedDate] = useState('')
   const [authorId, setAuthorId] = useState('')
+  const [description, setDescription] = useState('')
   const [coverImageUri, setCoverImageUri] = useState('')
   const [authorsLoaded, setAuthorsLoaded] = useState(false)
 
-  const [getAuthors, { data: authorsData, loading: authorsLoading, error: authorsError }] = useLazyQuery(GET_AUTHORS)
+  const [getAuthors, { data: authorsData, loading: authorsLoading, error: authorsError }] = useLazyQuery(GET_AUTHORS, {
+    variables: {
+        page: 1,
+        pageSize: 100
+        }
+    })
   const [createBook, { loading: createBookLoading }] = useMutation(CREATE_BOOK)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       await createBook({
-        variables: { title, publishedDate, authorId: Number(authorId), coverImageUri }
+        variables: { title, publishedDate, authorId: Number(authorId), coverImageUri, description }
       })
 
       alert('Book added successfully!')
@@ -28,6 +34,7 @@ export default function AddBook() {
       setTitle('')
       setPublishedDate('')
       setAuthorId('')
+      setDescription('')
       setCoverImageUri('')
     } catch (error) {
       console.error('Error adding book:', error)
@@ -88,6 +95,17 @@ export default function AddBook() {
               <option key={author.id} value={author.id}>{author.name}</option>
             ))}
           </select>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            rows="4"
+            required
+          ></textarea>
         </div>
         <div className="mb-4">
           <label htmlFor="coverImageUri" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cover Image URL</label>

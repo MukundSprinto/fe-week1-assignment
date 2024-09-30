@@ -200,7 +200,7 @@ export default function BookDetail({params}) {
             <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto bg-blue-200 dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
                     <div className="md:flex p-8">
-                        <div className="md:flex-shrink-0 mr-8">
+                        <div className="md:flex-shrink-0 mr-8 flex items-center justify-center">
                             {book.cover_image_uri && (
                                 <Image
                                     src={coverImage ? coverImage : book.cover_image_uri}
@@ -212,7 +212,7 @@ export default function BookDetail({params}) {
                                 />
                             )}
                         </div>
-                        <div className="flex-grow">
+                        <div className="flex-grow flex flex-col justify-between">
                             {isEditing ? (
                                 <div className="space-y-6 bg-blue-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
                                     <div className="space-y-2">
@@ -308,7 +308,7 @@ export default function BookDetail({params}) {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-6 bg-blue-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                                <div className="space-y-6 bg-blue-100 dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col justify-between h-full">
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                                         <p className="w-full px-4 py-2 text-xl font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
@@ -341,7 +341,7 @@ export default function BookDetail({params}) {
                                             {book.description}
                                         </p>
                                     </div>
-                                    <div className="flex space-x-4">
+                                    <div className="flex space-x-4 mt-auto">
                                         <button
                                             onClick={handleEdit}
                                             className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
