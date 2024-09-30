@@ -47,10 +47,17 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-4">Deployment Information</h2>
           <ul className="list-disc list-inside">
             <li>Frontend: Deployed on Vercel</li>
-            <li>Backend: Deployed on <a href="https://week-1-assignment-ep4t.onrender.com" className="text-blue-600 dark:text-blue-400 hover:underline">Render</a></li>
+            <li>Backend: Deployed on Render</li>
             <li>PostgreSQL Database: Hosted on Vercel</li>
             <li>MongoDB Database: Hosted on MongoDB Atlas</li>
           </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Important Note</h2>
+          <p className="mb-4">
+            Due to the use of free-tier hosting services, the servers may enter a dormant state during periods of inactivity. As a result, the initial request after a period of inactivity might experience a slight delay as the servers wake up. Subsequent requests should perform normally.
+          </p>
         </section>
 
       </div>
