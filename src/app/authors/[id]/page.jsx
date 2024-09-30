@@ -103,7 +103,7 @@ export default function AuthorDetail({params}) {
                 await updateAuthorDetails({
                     variables: {
                         authorId: Number(id),
-                        phone: editedAuthor.phone,
+                        phone: Number(editedAuthor.phone),
                         address: editedAuthor.address,
                         email: editedAuthor.email,
                         website: editedAuthor.website
