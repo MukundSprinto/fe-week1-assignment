@@ -4,7 +4,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client
 
 export default function Providers({children}) {
   const client = new ApolloClient({
-    uri: "http://localhost:3000/graphql/",
+    uri: "https://week-1-assignment-ep4t.onrender.com/graphql/",
     cache: new InMemoryCache(),
   });
   

@@ -19,7 +19,7 @@ export default function Home() {
             <li>Dark mode support</li>
           </ul>
         </section>
-        
+
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">About This Project</h2>
           <p className="mb-4">
@@ -47,8 +47,8 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-4">Deployment Information</h2>
           <ul className="list-disc list-inside">
             <li>Frontend: Deployed on Vercel</li>
-            <li>Backend: Deployed on Heroku</li>
-            <li>PostgreSQL Database: Hosted on Heroku</li>
+            <li>Backend: Deployed on <a href="https://week-1-assignment-ep4t.onrender.com" className="text-blue-600 dark:text-blue-400 hover:underline">Render</a></li>
+            <li>PostgreSQL Database: Hosted on Vercel</li>
             <li>MongoDB Database: Hosted on MongoDB Atlas</li>
           </ul>
         </section>
