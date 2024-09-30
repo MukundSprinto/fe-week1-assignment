@@ -14,7 +14,11 @@ export default function Books() {
     const [authorsLoaded, setAuthorsLoaded] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
 
-    const [getAuthors, { data: authorsData, loading: authorsLoading, error: authorsError }] = useLazyQuery(GET_AUTHORS)
+    const [getAuthors, { data: authorsData, loading: authorsLoading, error: authorsError }] = useLazyQuery(GET_AUTHORS, {
+            variables: {
+            pageSize: 10
+        }
+    })
 
     const { data, loading, error } = useQuery(GET_BOOKS, {
         variables: {
@@ -23,7 +27,7 @@ export default function Books() {
                 author_id,
                 published_date_range: published_date_range[0] && published_date_range[1] ? {start: published_date_range[0], end: published_date_range[1]} : null
             },
-            page: currentPage
+            pageSize: currentPage
         },
         fetchPolicy: 'network-only',
         nextFetchPolicy: 'cache-first'
